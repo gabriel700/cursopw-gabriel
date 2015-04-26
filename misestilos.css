@@ -1,0 +1,119 @@
+*
+/* para vincular la hoja de estilos .css debo vincular esta en el index con la siguiente sitaxis:
+<link rel="stylesheet" href="misestilos.css"> dentro del head */
+{
+margin: 0%;
+padding: 0%;
+}
+
+#agrupar
+{
+float: left;
+width: 100%;
+margin: 1% auto;
+}
+
+header
+{
+display: block; 
+/*esta funcion coloca los bloques uno arriba del otro*/
+}
+
+#cabecera
+{
+float: left;
+width: 98%;
+padding: 1%;
+background: #FFFBB9;
+}
+
+h1
+{
+font: bold 20px verdana, sans-serif;
+margin-bottom: 1%;
+/* en esta etiqueta significa que  coloca la letra de tamaño de 20px y la primera opcion en bold, si no tiene esta 
+fuente busca verdana, si el navegador no tiene verdana, entoces buscara sans serif*/
+}
+
+#menu
+{
+float: left;
+width: 98%;
+padding: 1%;
+background: #CCCCCC
+}
+
+#menu li
+{
+display:inline-block;
+list-style: none;
+margin: 0% 0% 0% 1%;
+font: bold 14px verdana, sans-serif;
+}
+
+#seccion
+{
+float: left;
+width: 67%;
+margin: 1%;
+}
+
+h2
+{
+font: bold 18px verdana, sans-serif;
+margin-bottom: 1%;
+}
+
+p
+{
+font-size: 12px;
+}
+
+.texto1
+{
+color: red;
+}
+
+figcaption
+{
+font: italic 14px verdana, sans serif;
+}
+
+img
+{
+max-width: 100%;
+border: 0;
+}
+
+article
+{
+float: left;
+width: 100%;
+background: #FFFBCC;
+border: 1px  solid #999999;
+margin-bottom: 1%;
+}
+
+#columna
+{
+float: left;
+width: 27%;
+margin: 1%;
+padding: 1%;
+background: #CCCCCC;
+}
+
+#pie
+{
+float: left;
+width: 100%;
+text-align: center;
+border-top: 1px solid #999999;
+}
+
+h3
+{
+font: bold 16px verdana, sans-serif;
+margin-bottom: 1%;
+}
+
