@@ -1,48 +1,200 @@
-<!DOCTYPE html>
-  <html lang="es">
-    <head>
-		<meta charset="utf-8">
-		<meta name="description" content="Ejercicio 1 de programacion web">
-		<meta content="width=device-width, initial-scale=1, minimum-scale=1" name="viewport">
-		<title>Ejercicio 1 de programacion web</title>
-		<link href="escritorio" rel="stylesheet">
-    </head>
+<?php
+session_start();
+header ('content-type: text/html; charset=utf-8');
+include "cabecera.php";
+?>
+
 	<!--de esta forma se hace un formulario el $nbsp es para generar espacio distinto a ese campo-->
     <body>
 	     <section class="formulario">
-		 <!--ahora de aqui en adelante embebemos codigo php dentro de html para conectar a la base de datos-->
+		 <!--ahora de aqui en adelante abrimos y embebemos codigo php dentro de html para conectar a la base de datos-->
 <?php
-//Obtener los valores las variables de HTML embebemos php / En la instruccion de abajo  de la linea 16 estamos preguntando si es verdadero que en el boton insertar hay valores hacer tal o cual operacion= enviar a la base de datos
-   
-    if (isset($_REQUEST['insertar']))
-	{
-	$insertar = $_REQUEST ['insertar'];
-	$usuario = $_REQUEST ['usuario'];
-	$clave= $_REQUEST ['clave'];
-	$correo= $_REQUEST ['correo'];
-	//Conectar con la base de datos clientes:
-	$servername = "localhost";
-	$
-    }
+ //Asignamos un valor inicial a las variables de control de errores
+ //Obtener los valores de las variables de HTML embebemos php / En la instruccion de abajo  estamos preguntando si es verdadero que en el boton insertar hay valores hacer tal o cual operacion= enviar a la base de datos
+    $error=false;
+	$errores= array ("usuario"=>"", "clave"=>"", "correo"=>"");
 	
+	/*Si la variable "insertar" existe y tiene algun valor, quiere decir que el usuario introdujo datos en el formulario, entonces procedemos a....
+	"validar" */
+	
+    if (isset($_REQUEST['insertar']))
+		{	
+		$insertar = $_REQUEST ['insertar'];
+		$usuario = $_REQUEST ['usuario'];
+		$clave= $_REQUEST ['clave'];
+		$correo= $_REQUEST ['correo'];
+		$tipo_cliente= $_REQUEST ['tipocliente'];
+		$cedula_rif= $_REQUEST ['cedularif'];
+		$nombres= $_REQUEST ['nombres'];
+		$apellidos= $_REQUEST ['apellidos'];
+		$direccion= $_REQUEST ['direccion'];
+		$telefono= $_REQUEST ['telefono'];
+	
+		//validamos los datos oblogatorios*
+	
+		include "validarusuario.php";
+		include "validarclave.php";
+		include "validarcorreo.php";
+		}
+
+	/* Si la variable "insertar" existe y tiene algun valor y ademas el valor de la variable "error" es "false", 
+		quiere decir que no hay erros en los datos introducidos por el usuario, entonces procedemos a...*/
+
+		if (isset($_REQUEST['insertar']) && !($error))
+		
+			{
+			include "conexionbasedatos.php";
+	
+			/* Preparamos la variable "$sql" con las instrucciones necesarias y los datos introducidos por el usuario,
+			para después insertarlos en la tabla "usuario" de la base de datos "cliente" */
+	
+			$sql="INSERT INTO usuario (usuario, clave, correo, tipo_cliente, cedula_rif, nombres, apellidos, direccion, telefono) values ('$usuario', '$correo', '$clave', '$tipo_cliente', '$cedula_rif', '$nombres', '$apellidos', '$direccion', '$telefono')";	
+	
+			/* Si se insertaron correctamente los datos en la tabla "usuario" de la base de datos
+				"clientes", entonces procedemos a... */
+			
+			if (mysqli_query($conn, $sql))
+				{
+					echo "Usuario creado satisfactoriamente";	
+					print ("<p><a href='index.php'>Volver a inicio</a></p>\n"); 
+				}
+
+			// De lo contrario, si no se pudieron insertar los datos, entonces procedemos a...
+	
+			else	
+				{
+					echo "Error: " . "<p>" . mysqli_error($conn) . "</p>";			
+					print ("<p><a href='insertar_usuario.php'>Volver al formulario</a></p>\n"); 
+				}
+			
+			/* No podemos dejar la conexión a la base de datos abierta!,
+				 así que procedemos a cerrarla */
+			
+			mysqli_close($conn);
+		
+			}	
+		
+	/* De lo contrario, si la variable "insertar" no existe o no tiene ningún valor
+		y además la variable "$error" tiene el valor "true", quiere decir que el usuario aún 
+		no ha indroducido datos o le faltó introducir uno o más datos de los que son obligatorios,
+		entonces a volver a mostrar los datos al usuario... */
+
+		else
+	
+		{
+
+/* Cerramos la etiqueta de PHP, porque lo que viene a continuación está
+	en HTML */
+?>			
+			<h1>Registrarse:</h1>
+			<form action="insertar_usuario.php" name="insertar" method="post">
+
+			<p class="etiqueta">Usuario:*</p>
+				<p class="campo"><input type="text" name="usuario" size="10" maxlenght="10" 
+
+<?php
+	/* Si la variable "insertar" existe y tiene algún valor, procedemos 
+			mostrar por pantalla el valor del usuario */
+
+	if (isset($_REQUEST['insertar']))
+		print ("value='$usuario'></p>");
+
+	// De lo contrario, mostramos el campo "usuario" en blanco 
+
+	else	
+		print ("></p>");
+
+	/* Si en la variable "$errores" en la posición "usuario" existe un valor diferente a "blanco",
+		Entonces mostramos por pantalla el mensaje de "error de usuario" */ 
+
+	if ($errores["usuario"] != "")
+		print "<p>Error: {$errores['usuario']}</p>";
+?>										
+					
+				<p class="etiqueta">Clave:*</p>				
+				<p class="campo"><input type="password" name="clave" id="miclave" size="10" maxlenght="10" 
+
+<?php
+
+	/* Si la variable "insertar" existe y tiene algún valor, procedemos 
+			mostrar por pantalla el valor del usuario */
+		
+	if (isset($_REQUEST['insertar']))
+		print ("value='$clave'></p>");
+
+	// De lo contrario, mostramos el campo "clave" en blanco 
+
+	else 
+		print ("></p>");
+	
+	/* Si en la variable "$errores" en la posición "clave" existe un valor diferente a "blanco",
+		Entonces mostramos por pantalla el mensaje de "error de usuario" */ 
+	
+	if ($errores["clave"] != "")
+		print "<p>Error {$errores['clave']}</p>";
+?>					
+								
+				<p class="etiqueta">Correo:*</p>
+				<p class="campo"><input type="email" name="correo" id="micorreo" 
+<?php
+				
+	/* Si la variable "insertar" existe y tiene algún valor, procedemos 
+			mostrar por pantalla el valor del usuario */
+		
+	if (isset($_REQUEST['insertar']))
+		print ("value='$correo'></p>");
+
+	// De lo contrario, mostramos el campo "correo" en blanco 
+
 	else
-	    
-    
+		print ("></p>");
 
+	/* Si en la variable "$errores" en la posición "clave" existe un valor diferente a "blanco",
+		Entonces mostramos por pantalla el mensaje de "error de usuario" */ 
 
+	if ($errores["correo"] != "")
+		print "<p>Error {$errores['correo']}</p>";
+				
+?>				
+				<p class="etiqueta">Cédula, RIF o pasaporte:
+				<p class="campo">
+					<select name="tipocliente">
+						<option value="" select>&nbsp
+						<option value="V">V
+						<option value="E">E
+						<option value="P">P
+						<option value="J">J
+						<option value="G">G
+					</select>
+					<input type="text" name="cedularif" id="micedularif" size="12" maxlenght="12"></p>
+					
+				<p class="etiqueta">Nombre(s):</p>
+				<p class="campo"><input type="text" name="nombres" id="misnombres" size="20" maxlenght="100"></p>
+											
+				<p class="etiqueta">Apellido(s):</p>
+				<p class="campo"><input type="text" name="apellidos" id="misapellidos" size="20" maxlenght="100"></p>
 
+				<p class="etiqueta">Dirección:</p>
+				<p class="campo"><input type="input" name="direccion" id="midireccion"></p>
 
+				<p class="etiqueta">Teléfono:</p>
+				<p class="campo"><input type="tel" name="telefono" id="mitelefono"></p>
+
+				<p class="campo"><input type="submit" name="insertar" value="Registrarse"></p>
+			</form>
+				<p class="campo">Nota: Los datos marcados con (*) deben ser rellenados obligatoriamente.</p>
+				<p class="campo"><a href="index.php">Volver al inicio</a></p>		
+		</section>
+
+<!-- Volvemos a abrir la etiqueta de PHP para colocar la llave
+	del último "else" -->
+<?php	
+		}
+// Cerramos la etiqueta de PHP para volver a HTML
 
 ?>
-	<!--de esta forma se hace un formulario en html nota: el $nbsp es para generar espacio distinto a ese campo-->	 
-		 <h1>Registrarse:</h1>
-		 <form action="insertar_usuario.php" name="insertar" method="post">
-		      <p class="campo">Usuario:*<input type="text" name="usuario" size="10" maxlenght="10" required></p>
-			  <p class="campo">Clave:*&nbsp;&nbsp;&nbsp;<input type="text" name="clave" id="miclave" size="10" maxlenght="10" required></p>
-              <p class="campo">Correo:*<input type="email" name="correo" id="micorreo" required></p>
-              <p class="campo"><input type="submit" name="insertar" value="Registrarse"></p>
-         </form>
-              <p class="campo">Nota: Los datos marcados con (*) deben ser rellenados obligatoriamente</p>
-              <p><a href="index.html">Volver al inicio</a></p>			  
-		 </section>
-    </body>
+
+		</body>
+	</html>					
+	
+	

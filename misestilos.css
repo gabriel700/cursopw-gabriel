@@ -119,7 +119,9 @@ margin-bottom: 1%;
 
 .formulario
 {
-margin: 2%
+margin: 1%;
+padding: 1%;
+width: 96%;
 }
 
 .campo
@@ -127,6 +129,12 @@ margin: 2%
 margin: 1% 1% 0% 1%;
 float: left;
 width: 98%;
+}
+
+.opcionmenu
+{
+text-decoration: none;
+color: black;
 }
 
 
